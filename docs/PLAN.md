@@ -7,6 +7,8 @@ App de contabilidad y finanzas personales con **presupuesto quincenal**, basada 
 1. Uso **individual** por defecto, con **espacios compartidos** para registrar gastos entre dos personas (pareja) y saber quién debe a quién.
 2. Presupuesto **variable pero casi siempre fijo**: plantilla base que se copia a cada mes y se puede ajustar mes a mes.
 3. **Ninguna credencial en el repositorio** (es público). Todo por variables de entorno y secretos de CI.
+4. Metas de ahorro y deudas pueden ser **personales o del espacio**, conviviendo en el mismo espacio compartido.
+5. El **split de un gasto se elige al registrarlo**, movimiento por movimiento — no hay un modo global.
 
 ---
 
@@ -107,7 +109,7 @@ un ledger personal creado al registrarse, y puede crear o ser invitado a ledgers
 ```
 users/{uid}
   { displayName, email, photoURL, defaultLedgerId, createdAt }
-  ledgerRefs/{ledgerId}   { name, role, color, joinedAt }   // para pintar el switcher sin leer todo
+  ledgerRefs/{ledgerId}   { name, role, color, joinedAt, lastSplitUsed }  // switcher + sugerencia de split
 
 ledgers/{ledgerId}
   { name: "Personal" | "Casa",
@@ -145,10 +147,20 @@ ledgers/{ledgerId}
   budgets/{YYYY-MM}  { month, income: { q1, q2 }, source: "template"|"manual", closedAt? }
     items/{id}       { name, categoryId, planned, q, icon, templateItemId?, overridden: bool }
 
-  recurring/{id}     { name, categoryId, accountId, amount, q, dayOfMonth, active }
-  loans/{id}         { name, entity, original, balance, fee, installments, paid, rate, startDate, nextPaymentDate }
-  installments/{id}  { name, total, fee, installments, paid, nextPaymentDate }   // tasa 0
-  goals/{id}         { name, icon, target, current, monthlyContribution, dueDate, active }
+  recurring/{id}     { name, categoryId, accountId, amount, q, dayOfMonth, active,
+                       scope: "personal"|"shared", ownerUid, visibility: "private"|"space" }
+
+  loans/{id}         { name, entity, original, balance, fee, installments, paid, rate,
+                       startDate, nextPaymentDate,
+                       scope: "personal"|"shared", ownerUid, visibility: "private"|"space" }
+
+  installments/{id}  { name, total, fee, installments, paid, nextPaymentDate,     // tasa 0
+                       scope: "personal"|"shared", ownerUid, visibility: "private"|"space" }
+
+  goals/{id}         { name, icon, target, current, monthlyContribution, dueDate, active,
+                       scope: "personal"|"shared", ownerUid,
+                       visibility: "private"|"space",
+                       contributions: { uidA: 180000, uidB: 120000 } }   // solo si scope = shared
 
 invites/{code}       { ledgerId, ledgerName, email (lowercase), role, invitedByUid,
                        status: "pending"|"accepted"|"revoked", expiresAt }
@@ -156,11 +168,24 @@ invites/{code}       { ledgerId, ledgerName, email (lowercase), role, invitedByU
 
 ### Gastos compartidos
 - Un gasto en un ledger compartido lleva **`paidByUid`** (quién puso la plata) y **`split`** (cómo se reparte).
+- **El split se decide al registrar cada movimiento**: no hay un modo global en configuración. El modal muestra siempre el selector con cuatro opciones — *Sin dividir* (100 % de quien pagó, `split: null`), *Mitad y mitad*, *Por porcentaje* y *Montos exactos* — y viene preseleccionado con **lo último que usaste en ese espacio** (`lastSplitUsed`, guardado en `ledgerRefs`), que es una sugerencia, no una regla: cambiarlo no cambia nada del pasado.
 - `split.mode: "equal"` reparte 50/50; `percent` y `amount` permiten 70/30 o montos exactos. El movimiento se guarda **una sola vez**: no se duplica por persona.
+- Se puede **editar el split de un movimiento ya registrado**; el balance se recalcula solo porque es un valor derivado.
 - El **balance** se calcula en el cliente: para cada movimiento, quien pagó queda acreedor por la parte que no le tocaba. Sumado da un único número: *"Ana le debe ₡43,200 a Luis"*.
 - **Liquidar** crea un `settlement` + una transferencia real entre cuentas, y deja el balance en cero.
 - El movimiento afecta el saldo de **la cuenta con la que se pagó**, sin importar el split. Split y saldo son cosas distintas: el split solo alimenta el balance entre personas.
 - En un ledger personal, `paidByUid` es siempre el dueño y `split` es `null`; la UI de división ni se muestra.
+
+### Metas y deudas: personales y del espacio
+Dentro de un mismo espacio compartido conviven las dos cosas, distinguidas por **`scope`**:
+
+- **`scope: "personal"`** — la meta o la deuda es de una sola persona (`ownerUid`). Es lo que pasa con un préstamo que trajo cada quien de antes, o un ahorro propio.
+- **`scope: "shared"`** — es de la pareja: *"Fondo del viaje"*, *"Préstamo del carro"*. Lleva **`contributions`**, cuánto puso cada quien, que se alimenta de los movimientos con `linkedId` apuntando a la meta. Así se ve el avance total **y** el aporte de cada uno.
+- **`visibility`** es independiente de `scope`: una meta personal puede ser `"private"` (solo la ve su dueño) o `"space"` (la ve la pareja pero sigue siendo de una sola persona). Las `shared` son siempre `"space"`.
+  - **Por defecto una meta o deuda personal nace `"private"`**, con un switch *"Visible para el espacio"* al crearla. Es el default prudente: se puede abrir después, pero lo que ya se vio no se puede "des-ver".
+- En consulta esto son **dos listeners que se unen en el cliente**: `where('visibility','==','space')` y `where('ownerUid','==',miUid')`. Las reglas niegan la lectura de un documento `private` ajeno, así que la privacidad no depende de que el query filtre bien.
+- El **dashboard** de un espacio compartido muestra las dos capas: los KPIs de deudas y ahorros suman lo del espacio, con el desglose *"tuyo / compartido"* debajo.
+- En un ledger personal todo nace `scope: "personal"` y la UI no muestra ninguna de estas opciones.
 
 ### Presupuesto variable sobre plantilla fija
 - `budgetTemplate` es lo normal del mes (alquiler, teléfono, gimnasio…).
@@ -205,6 +230,8 @@ match /invites/{code} {
                    request.resource.data.status == 'accepted';
 }
 ```
+> Nota: las subcolecciones con `visibility` necesitan una regla propia más estricta que el
+> `match /{sub=**}` genérico — leer un documento `private` solo lo puede hacer su `ownerUid`.
 > Nota: cambiar `members` debe restringirse al `owner` con una condición que compare
 > `request.resource.data.members.keys()` contra las anteriores, y la aceptación de invitación
 > permite **solo** que el invitado se agregue a sí mismo con el rol del invite. Estas reglas se
@@ -248,9 +275,9 @@ firestore.rules   firestore.indexes.json   .env.example
 | **5. Presupuesto** | plantilla + materialización por mes, overrides, quincenas, previsto vs. real, estados | 2–3 días |
 | **6. Dashboard** | KPIs, control quincenal, flujo de caja, alertas, gasto por categoría | 2 días |
 | **7. Espacios compartidos** | switcher, invitaciones, roles, reglas con tests en emulador | 3 días |
-| **8. Gastos compartidos** | `paidBy` + split en el modal, balance "quién debe a quién", liquidación | 2–3 días |
-| **9. Deudas** | préstamos y tasa 0; pagar cuota genera movimiento | 2 días |
-| **10. Ahorros** | metas, aportes, % de avance, proyección | 1 día |
+| **8. Gastos compartidos** | `paidBy` + selector de split en el modal, balance "quién debe a quién", liquidación | 2–3 días |
+| **9. Deudas** | préstamos y tasa 0, personales y del espacio; pagar cuota genera movimiento | 2 días |
+| **10. Ahorros** | metas personales y de pareja, aportes por persona, % de avance, proyección | 1–2 días |
 | **11. Calendario** | eventos del mes desde recurrentes, cuotas y metas | 1–2 días |
 | **12. Configuración** | moneda, ciclo, categorías, recurrentes, seguridad, exportar CSV | 1–2 días |
 | **13. PWA + pulido** | manifest, service worker, offline, skeletons, accesibilidad, tests | 2 días |
@@ -275,5 +302,5 @@ de `ledgers/` y no de `users/`; migrarlo después sería reescribir la mitad de 
 ## 9. Decisiones pendientes
 1. ¿Multi-moneda real (tipo de cambio) o una moneda por espacio? (por ahora: una por espacio)
 2. ¿Importar movimientos desde CSV del banco / SINPE?
-3. En un espacio compartido, ¿las **metas de ahorro y las deudas** son del espacio o siguen siendo personales?
-4. ¿El split por defecto es 50/50 o proporcional al ingreso de cada quien?
+3. Al liquidar un balance, ¿se permite liquidación **parcial** o siempre por el total?
+4. Si alguien sale del espacio, ¿sus metas y deudas `personal` se van con él o quedan archivadas en el espacio?
