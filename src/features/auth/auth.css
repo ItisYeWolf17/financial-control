@@ -1,0 +1,119 @@
+/* Dos paneles: la marca a la izquierda, la tarea a la derecha.
+   En móvil la marca se reduce a una cabecera y el formulario ocupa todo. */
+.auth {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  background: var(--color-bg);
+}
+.auth-brand {
+  padding: 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  background: linear-gradient(160deg, #1b1e30, #141625);
+}
+.auth-brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.auth-brand-facts {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.auth-fact-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+.auth-fact-value {
+  font-family: var(--font-heading);
+  font-size: 18px;
+}
+.auth-panel {
+  padding: 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+}
+.auth-form {
+  width: 100%;
+  max-width: 380px;
+  animation: caudal-fade-up var(--dur-slow) var(--ease-out) both;
+}
+.auth-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--color-text-faint);
+}
+
+/* ── onboarding ────────────────────────────────────────────────── */
+.onb {
+  width: 100%;
+  max-width: 420px;
+  animation: caudal-fade-up var(--dur-slow) var(--ease-out) both;
+}
+.onb-bars {
+  display: flex;
+  gap: 4px;
+  margin: 18px 0 22px;
+}
+.onb-bar {
+  height: 3px;
+  flex: 1;
+  border-radius: 2px;
+  background: var(--color-surface-3);
+  transition: background var(--dur) var(--ease-out);
+}
+.onb-bar[data-done='true'] { background: var(--color-accent); }
+.onb-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.onb-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 13px;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  animation: caudal-fade-up var(--dur-slow) var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+.onb-row-value {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 860px) {
+  .auth {
+    grid-template-columns: 1fr;
+  }
+  .auth-brand {
+    padding: 28px 20px;
+    gap: 22px;
+  }
+  .auth-brand h1 { font-size: 24px; }
+  .auth-brand-facts { display: none; }
+  .auth-panel {
+    padding: 24px 20px 48px;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+  .auth-form,
+  .onb { max-width: none; }
+}

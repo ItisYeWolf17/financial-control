@@ -28,9 +28,13 @@ npm run dev
 
 ## Estado
 
-Fase 0–1 en curso: sistema visual y gráficos. La pantalla que levanta `npm run
-dev` es una **vista de revisión del dashboard** con los datos del diseño; aún no
-hay Firestore detrás.
+**Fases 0 y 1 completas**: sistema visual, gráficos animados y todas las
+pantallas del diseño navegables — acceso, primer uso en siete pasos, dashboard,
+shell de escritorio y de móvil. Todavía **sin Firestore ni Firebase Auth**: los
+datos son los del diseño y los formularios no persisten. Eso entra en la fase 2.
+
+Recorrido: `/login` → `/onboarding` → `/s/personal` (o `/s/casa`, el espacio
+compartido, donde aparece el reparto de gastos).
 
 ## Sistema visual
 

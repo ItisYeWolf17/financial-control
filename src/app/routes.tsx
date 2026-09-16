@@ -10,12 +10,16 @@ import {
   Wallet,
 } from '@phosphor-icons/react';
 import { AppShell } from './AppShell';
+import { LoginScreen } from '@/features/auth/LoginScreen';
+import { OnboardingScreen } from '@/features/auth/OnboardingScreen';
 import { DashboardPreview } from '@/features/dashboard/DashboardPreview';
 import { MoreScreen } from '@/features/screens/MoreScreen';
 import { Placeholder } from '@/features/screens/Placeholder';
 
 export const router = createBrowserRouter([
-  { path: '/', element: <Navigate to="/s/personal" replace /> },
+  { path: '/', element: <Navigate to="/login" replace /> },
+  { path: '/login', element: <LoginScreen /> },
+  { path: '/onboarding', element: <OnboardingScreen /> },
   {
     path: '/s/:ledgerId',
     element: <AppShell />,
