@@ -1,5 +1,6 @@
-import { DashboardPreview } from '@/features/dashboard/DashboardPreview';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './routes';
 
 export function App() {
-  return <DashboardPreview />;
+  return <RouterProvider router={router} />;
 }

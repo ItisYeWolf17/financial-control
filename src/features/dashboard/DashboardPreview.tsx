@@ -4,7 +4,6 @@ import {
   ArrowUpRight,
   ArrowsClockwise,
   Bank,
-  ChartDonut,
   PiggyBank,
   Wallet,
 } from '@phosphor-icons/react';
@@ -79,55 +78,18 @@ export function DashboardPreview() {
   }, [pass]);
 
   return (
-    <div style={{ padding: '24px 22px 56px', maxWidth: 1280, margin: '0 auto' }}>
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'space-between',
-          gap: 20,
-          flexWrap: 'wrap',
-          marginBottom: 22,
-        }}
-      >
-        <div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 9,
-              fontSize: 11,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--color-text-muted)',
-              marginBottom: 6,
-            }}
-          >
-            <ChartDonut size={15} color="var(--color-accent-300)" aria-hidden="true" />
-            Caudal · septiembre 2026
-          </div>
-          <h2>Resumen</h2>
-        </div>
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
         <button
           type="button"
           onClick={() => setPass((p) => p + 1)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 7,
-            border: '1px solid var(--color-divider)',
-            background: 'var(--color-surface)',
-            color: 'var(--color-text-secondary)',
-            borderRadius: 'var(--radius)',
-            padding: '7px 12px',
-            fontSize: 12,
-            cursor: 'pointer',
-          }}
+          className="btn btn-ghost"
+          title="Vuelve a ejecutar la carga para ver los skeletons y las animaciones"
         >
           <ArrowsClockwise size={14} aria-hidden="true" />
           Recargar datos
         </button>
-      </header>
+      </div>
 
       <div
         style={{
