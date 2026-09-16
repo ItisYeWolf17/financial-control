@@ -1,0 +1,45 @@
+# dependencias
+node_modules/
+.pnp/
+.pnp.js
+
+# build
+dist/
+dist-ssr/
+build/
+*.local
+
+# entorno — NUNCA versionar credenciales reales
+.env
+.env.*
+!.env.example
+
+# service accounts y llaves de Firebase / Google Cloud
+*service-account*.json
+*serviceAccountKey*.json
+*-firebase-adminsdk-*.json
+.firebaserc.local
+
+# firebase cli / emuladores
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+emulator-data/
+
+# tests y caches
+coverage/
+.vite/
+.eslintcache
+
+# editores y sistema
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+npm-debug.log*
+yarn-error.log*
