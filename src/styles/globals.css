@@ -1,0 +1,79 @@
+@import './tokens.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+h1 { font-size: 30px; }
+h2 { font-size: 22px; }
+h3 { font-size: 18px; }
+
+a {
+  color: var(--color-accent-300);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-300);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Números en columnas: alineados. Números grandes: proporcionales. */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ── animaciones compartidas ───────────────────────────────────── */
+@keyframes caudal-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes caudal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes caudal-shimmer {
+  from { background-position: -180% 0; }
+  to { background-position: 180% 0; }
+}
+@keyframes caudal-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Entrada escalonada: el contenedor pasa --i por ítem. */
+.enter {
+  animation: caudal-fade-up var(--dur-slow) var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}

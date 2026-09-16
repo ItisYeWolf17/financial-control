@@ -1,0 +1,87 @@
+/* ── Card ──────────────────────────────────────────────────────── */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+  min-width: 0;
+}
+.card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.card-title {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 500;
+}
+.card-note {
+  font-size: 11px;
+  color: var(--color-text-faint);
+}
+
+/* ── Skeleton ──────────────────────────────────────────────────── */
+.skeleton {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    100deg,
+    var(--color-surface-2) 32%,
+    #262939 50%,
+    var(--color-surface-2) 68%
+  );
+  background-size: 220% 100%;
+  animation: caudal-shimmer 1.35s var(--ease-in-out) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background: var(--color-surface-2);
+  }
+}
+
+/* ── KPI ───────────────────────────────────────────────────────── */
+.kpi {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+.kpi-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.kpi-value {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  letter-spacing: -0.025em;
+  margin: 9px 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kpi-sub {
+  font-size: 11px;
+  color: var(--color-text-faint);
+}
+
+/* ── Meter (barra de progreso) ─────────────────────────────────── */
+.meter {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-track);
+  overflow: hidden;
+}
+.meter-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width var(--dur-chart) var(--ease-out);
+}

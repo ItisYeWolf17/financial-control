@@ -1,0 +1,259 @@
+/* ── marco común ───────────────────────────────────────────────── */
+.viz {
+  position: relative;
+  min-width: 0;
+}
+.viz-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.viz-title {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 500;
+}
+.viz-note {
+  font-size: 11px;
+  color: var(--color-text-faint);
+}
+.viz-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin: 10px 0 14px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+.viz-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.viz-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: 0 0 auto;
+}
+.viz-toggle {
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+}
+.viz-toggle:hover {
+  color: var(--color-text);
+  background: var(--color-surface-2);
+}
+
+/* ── vista de tabla (toda cifra alcanzable sin hover) ──────────── */
+.viz-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  animation: caudal-fade-in var(--dur) var(--ease-out) both;
+}
+.viz-table th,
+.viz-table td {
+  text-align: left;
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--color-divider);
+}
+.viz-table th {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+.viz-table td:last-child,
+.viz-table th:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── tooltip ───────────────────────────────────────────────────── */
+.viz-tip {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  background: var(--color-surface-3);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  padding: 7px 9px;
+  min-width: 108px;
+  animation: caudal-fade-in var(--dur-fast) var(--ease-out) both;
+}
+.viz-tip-value {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+.viz-tip-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+.viz-tip-key {
+  width: 10px;
+  height: 2px;
+  border-radius: 1px;
+  flex: 0 0 auto;
+}
+
+/* ── columnas ──────────────────────────────────────────────────── */
+.viz-cols {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.viz-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+  height: 100%;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: default;
+  border-radius: var(--radius-sm);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.viz-col:hover,
+.viz-col:focus-visible {
+  background: #ffffff08;
+}
+.viz-col-value {
+  font-size: 11px;
+  white-space: nowrap;
+  font-family: var(--font-heading);
+  font-variant-numeric: tabular-nums;
+}
+.viz-col-bar {
+  width: 100%;
+  max-width: 24px;
+  border-radius: 4px 4px 0 0;
+  transition:
+    height var(--dur-chart) var(--ease-out),
+    filter var(--dur-fast) var(--ease-out);
+}
+.viz-col:hover .viz-col-bar,
+.viz-col:focus-visible .viz-col-bar {
+  filter: brightness(1.18);
+}
+.viz-col-key {
+  font-size: 10px;
+  white-space: nowrap;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* ── barras horizontales ───────────────────────────────────────── */
+.viz-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.viz-row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 2px 0;
+  cursor: default;
+  border-radius: var(--radius-sm);
+}
+.viz-row-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+.viz-row-value {
+  font-family: var(--font-heading);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+.viz-row-track {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-track);
+  overflow: hidden;
+}
+.viz-row-fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  transition:
+    width var(--dur-chart) var(--ease-out),
+    filter var(--dur-fast) var(--ease-out);
+}
+.viz-row:hover .viz-row-fill,
+.viz-row:focus-visible .viz-row-fill {
+  filter: brightness(1.18);
+}
+
+/* ── dona ──────────────────────────────────────────────────────── */
+.viz-donut {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.viz-donut-svg {
+  transform: rotate(-90deg);
+  flex: 0 0 auto;
+  overflow: visible;
+}
+.viz-arc {
+  fill: none;
+  transition:
+    stroke-dasharray var(--dur-chart) var(--ease-out),
+    stroke-width var(--dur-fast) var(--ease-out);
+  cursor: default;
+}
+.viz-arc:hover,
+.viz-arc:focus-visible {
+  stroke-width: 20;
+  outline: none;
+}
+.viz-donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.viz-donut-total {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+.viz-donut-caption {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}

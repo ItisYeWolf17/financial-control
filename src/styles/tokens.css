@@ -1,0 +1,100 @@
+/* Caudal — tokens del sistema "Nocturne", extraídos del design canvas.
+   Fuente de verdad del look: retocar acá, no en los componentes. */
+
+:root {
+  color-scheme: dark;
+
+  /* ── superficies ─────────────────────────────────────────────── */
+  --color-bg: #0e1018;
+  --color-surface: #14151f;
+  --color-surface-2: #1b1d29;
+  --color-surface-3: #1d1f2c;
+  --color-sidebar: #13151f;
+  --color-divider: #2a2c3a;
+  --color-track: #2f3240;
+
+  /* ── texto ───────────────────────────────────────────────────── */
+  --color-text: #e9e9ed;
+  --color-text-secondary: #b2b6ca;
+  --color-text-muted: #9397ab;
+  --color-text-faint: #75798c;
+
+  /* ── acento ──────────────────────────────────────────────────── */
+  --color-accent: #796cbf;
+  --color-accent-300: #b5abfc;
+  --color-accent-100: #d2cefd;
+  --color-accent-bg: #2b2741;
+  --color-accent-bg-strong: #262a60;
+
+  /* ── estado (reservados: nunca se usan como color de serie) ──── */
+  --color-good: #7fd1a6;
+  --color-good-bg: #22342b;
+  --color-warning: #e0c078;
+  --color-warning-bg: #34301f;
+  --color-critical: #e88b8b;
+  --color-critical-bg: #3a2427;
+  --color-info: #b5abfc;
+  --color-info-bg: #2b2741;
+
+  /* ── data viz ────────────────────────────────────────────────────
+     Paleta categórica (identidad: categorías de gasto). Orden FIJO,
+     nunca se cicla ni se reasigna por ranking. Pasa los seis checks
+     sobre la superficie oscura (CVD ΔE 8.4, normal 19.3, contraste ≥3:1). */
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #008300;
+  --series-7: #9085e9;
+  --series-8: #e66767;
+
+  /* Rampa secuencial (magnitud): un solo tono, claro → oscuro. */
+  --ramp-1: #d2cefd;
+  --ramp-2: #b5abfc;
+  --ramp-3: #968ae0;
+  --ramp-4: #796cbf;
+  --ramp-5: #5d5294;
+
+  --viz-grid: #23253180;
+  --viz-axis: #2a2c3a;
+
+  /* ── tipografía ──────────────────────────────────────────────── */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  /* ── forma y profundidad ─────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.45);
+
+  /* ── movimiento ──────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.22, 0.8, 0.28, 1);
+  --ease-in-out: cubic-bezier(0.55, 0.06, 0.28, 1);
+  --dur-fast: 140ms;
+  --dur: 240ms;
+  --dur-slow: 520ms;
+  --dur-chart: 720ms;
+}
+
+/* Respetar la preferencia del sistema: sin movimiento, sin animación.
+   Los componentes además leen esto por JS (usePrefersReducedMotion). */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur: 0ms;
+    --dur-slow: 0ms;
+    --dur-chart: 0ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
